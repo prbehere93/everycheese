@@ -12,8 +12,7 @@ User = get_user_model()
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
-    # These Next Two Lines Tell the View to Index
-    #   Lookups by Username
+    # These Next Two Lines Tell the View to Index Lookups by Username
     slug_field = "username"
     slug_url_kwarg = "username"
 
@@ -24,6 +23,7 @@ user_detail_view = UserDetailView.as_view()
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     fields = [
         "name",
+        "bio",
     ]
 
     # We already imported user in the View code above,
@@ -34,7 +34,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     #   successful Update
     def get_success_url(self):
         return reverse(
-            "users:detail",
+            "users:detail",  #mentions the app name and the url name
             kwargs={'username': self.request.user.username},
         )
 
