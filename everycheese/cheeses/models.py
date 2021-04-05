@@ -2,6 +2,7 @@ from django.db import models
 from autoslug import AutoSlugField
 from model_utils.models import TimeStampedModel
 from django_countries.fields import CountryField
+from django.urls import reverse
 
 class cheese(TimeStampedModel):
     class Firmness(models.TextChoices):
@@ -19,6 +20,11 @@ class cheese(TimeStampedModel):
 
     def __str__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        """Return absolute URL to the Cheese Detail page."""
+        return reverse('cheeses:detail',
+        kwargs={"slug": self.slug})
 
 # Note that we defined the firmness constants as variables within the scope of the Cheese model. This allows us to do things like
 # this comparison:
