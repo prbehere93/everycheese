@@ -6,3 +6,6 @@ from .models import cheese
 class CheeseListView(ListView):
     model=cheese
 
+#for helping the user view the model in the frontend
+class CheeseDetailView(DetailView):
+    model=cheese
