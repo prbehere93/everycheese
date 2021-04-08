@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView
 from .models import cheese
 from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #a simple view which lists all the cheeses on a single page
 class CheeseListView(ListView):
@@ -12,7 +13,7 @@ class CheeseDetailView(DetailView):
     model=cheese
 
 #For creating cheese model objects from the fromtend
-class CheeseCreateView(CreateView):
+class CheeseCreateView(LoginRequiredMixin,CreateView):
     model=cheese
     fields=['name','description','firmness','country_of_origin']
 
