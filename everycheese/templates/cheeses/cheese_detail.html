@@ -2,8 +2,8 @@
 {% block title %}Cheeses {{cheese.name}} {% endblock title %}
 {% block content %}
     <h2>{{cheese.name}}</h2>
-    {%if chesse.firmness%}
-        <p>Firmness: {{chesse.get_firmness_display}}</p>
+    {%if cheese.firmness%}
+        <p>Firmness: {{cheese.get_firmness_display}}</p>
     {% endif %}
 
     {% if cheese.description %}
