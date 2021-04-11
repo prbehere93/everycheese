@@ -9,9 +9,9 @@ from ..models import cheese
 from ..views import (
 CheeseCreateView,
 CheeseListView,
-CheeseDetailView
+CheeseDetailView, CheeseUpdateView
 )
-from .factories import CheeseFactory
+from .factories import CheeseFactory, cheese_1
 
 pytestmark = pytest.mark.django_db
 
@@ -23,18 +23,17 @@ def test_good_cheese_list_view(rf):
     # Test that the response is valid
     assertContains(response, 'Cheese List')
 
-def test_good_cheese_detail_view(rf):
-    # Order some cheese from the CheeseFactory
-    cheese = CheeseFactory()    
+def test_good_cheese_detail_view(rf, cheese_1):
+    # Order some cheese from the CheeseFactory    
     #make a request for the new cheese
-    url=reverse("cheeses:detail",kwargs={'slug':cheese.slug})
+    url=reverse("cheeses:detail",kwargs={'slug':cheese_1.slug})
     request = rf.get(url)
 
     #using the request to get a response
     callable_obj=CheeseDetailView.as_view()
-    response=callable_obj(request,slug=cheese.slug)
+    response=callable_obj(request,slug=cheese_1.slug)
     #test for a valid response
-    assertContains(response,cheese.name)
+    assertContains(response,cheese_1.name)
 
 def test_good_cheese_create_view(rf, admin_user):
     cheese=CheeseFactory()
@@ -89,3 +88,31 @@ def test_cheese_create_form_valid(rf, admin_user):
     assert cheese1.description == "A salty hard cheese"
     assert cheese1.firmness == cheese.Firmness.HARD
     assert cheese1.creator == admin_user
+
+def test_good_cheese_update_view(rf, admin_user, cheese_1):
+    url=reverse("cheeses:update", kwargs={'slug':cheese_1.slug})
+    request = rf.get(url)
+    request.user=admin_user
+    callable_obj=CheeseUpdateView.as_view()
+    response=callable_obj(request, slug=cheese_1.slug)
+    assertContains(response,"Update Cheese")
+
+def test_cheese_update(rf, admin_user, cheese_1):
+    """POST request to CheeseUpdateView updates a cheese
+    and redirects.
+    """
+    # Make a request for our new cheese
+    form_data = {'name':cheese_1.name,
+        'description':cheese_1.description,
+        'firmness':cheese_1.firmness
+    }
+    url=reverse("cheeses:update",kwargs={'slug':cheese_1.slug})
+    request=rf.get(url, form_data)
+    request.user=admin_user
+    callable_obj=CheeseUpdateView.as_view()
+    response=callable_obj(request, slug=cheese_1.slug)
+
+    #check that the cheese has changed
+    cheese_1.refresh_from_db() #using this func to update the cheese instance with values from the db
+    assert cheese_1.description=='Something New'
+
