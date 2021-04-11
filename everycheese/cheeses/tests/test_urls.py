@@ -22,7 +22,7 @@ def test_add_reverse():
 def test_add_resolve():
     assert resolve('/cheeses/add/').view_name=='cheeses:add'
 
-#importing cheese objec to check for the slug
+#importing cheese object to check for the slug
 def test_detail_reverse(cheese):
     "cheeses:detail reverse should match /cheeses/cheeseslug"
     url=reverse('cheeses:detail',kwargs={'slug':cheese.slug})

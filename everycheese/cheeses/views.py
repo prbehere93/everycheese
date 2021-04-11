@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import cheese
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,3 +21,7 @@ class CheeseCreateView(LoginRequiredMixin,CreateView):
         form.instance.creator=self.request.user
         return super().form_valid(form)
 
+class CheeseUpdateView(LoginRequiredMixin,UpdateView):
+    model=cheese
+    fields=['name','description','firmness','country_of_origin']
+    action="Update"
